@@ -29,21 +29,25 @@ public class ZXDecoder implements BarcodeDecoder
     protected Map<DecodeHintType, Object> hints = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
     private MultiFormatReader reader;
 
-
-    public ZXDecoder()
+    public ZXDecoder(Collection<BarcodeFormat> decodeFormats) 
     {
         reader = new MultiFormatReader();
-
-        Collection<BarcodeFormat> decodeFormats = EnumSet.noneOf(BarcodeFormat.class);
-        decodeFormats.addAll(QR_CODE_FORMATS);
-        decodeFormats.addAll(ONE_D_FORMATS);
-        decodeFormats.addAll(DATA_MATRIX_FORMATS);
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
         hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
         hints.put(DecodeHintType.TRY_HARDER, true);
 
         reader.setHints(hints);
+    }
+
+    public ZXDecoder()
+    {
+        Collection<BarcodeFormat> decodeFormats = EnumSet.noneOf(BarcodeFormat.class);
+        decodeFormats.addAll(QR_CODE_FORMATS);
+        decodeFormats.addAll(ONE_D_FORMATS);
+        decodeFormats.addAll(DATA_MATRIX_FORMATS);
+
+	this(decodeFormats);
     }
 
     public String decode(final byte[] image, final int width, final int height)

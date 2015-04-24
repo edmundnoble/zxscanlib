@@ -30,6 +30,9 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     protected boolean playSound = true;
     protected SoundPlayer soundPlayer;
 
+    protected static final int DEFAULT_FRAMES_PER_SCAN = 5;
+    protected int framesPerScan = DEFAULT_FRAMES_PER_SCAN;
+
     public ScannerView(final Context context)
     {
         super(context);
@@ -143,9 +146,12 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         }
     }
 
+    private int framesCountedBeforeScan = 0;
+
     public void onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
     {
-        if (scannerViewEventListener != null)
+	framesCountedBeforeScan += 1;
+        if (scannerViewEventListener != null && framesCountedBeforeScan >= framesPerScan)
         {
             final String data = decoder.decode(bytes, size.width, size.height);
             if (!TextUtils.isEmpty(data))
@@ -155,6 +161,7 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
                     beep();
                 }
             }
+	    framesCountedBeforeScan = 0;
         }
     }
 
